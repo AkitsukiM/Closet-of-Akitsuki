@@ -131,3 +131,4 @@ class ResNet(nn.Module):
         out = out.view(-1, self.fcIn)
         out = self.fc(out)
         return out
+

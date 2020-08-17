@@ -1,13 +1,11 @@
-# ResNet version 18.1.01d for cifar10
+# ResNet version 18.1.01e for cifar10
 # 
 # Copyright (c) 2020 Marina Akitsuki. All rights reserved.
-# Date modified: 2020/08/15
+# Date modified: 2020/08/17
 # 
 
 datasetsMean = (0.4914, 0.4822, 0.4465) # (0.485, 0.456, 0.406) # datasetsMean for ImageNet
 datasetsStd = (0.2023, 0.1994, 0.2010) # (0.229, 0.224, 0.225) # datasetsStd for ImageNet
-batchSizeTrain = 128
-batchSizeTest = 100
 
 blocks = (1, 2, 2, 2, 2) # 2 + 2 * (2 + 2 + 2 + 2) = 18
 ioplanes = (16, 16, 32, 64, 128)
@@ -39,7 +37,11 @@ import myResNet
 
 gpu = True if torch.cuda.is_available() else False
 device = torch.device("cuda" if gpu else "cpu")
-print(gpu, device)
+workers = 2 if gpu else 0
+print(gpu, device, workers)
+
+batchSizeTrain = 128
+batchSizeTest = 100
 
 transform = transforms.Compose([
     transforms.ToTensor(), transforms.Normalize(datasetsMean, datasetsStd)])
@@ -50,12 +52,12 @@ transformTrain = transforms.Compose([
     transforms.ToTensor(), transforms.Normalize(datasetsMean, datasetsStd)])
 
 trainset = torchvision.datasets.CIFAR10(root = ROOT_PATH, train = True, download = True, transform = transformTrain)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size = batchSizeTrain, shuffle = True, num_workers = (2 if gpu else 0))
+trainloader = torch.utils.data.DataLoader(trainset, batch_size = batchSizeTrain, shuffle = True, num_workers = workers)
 
 trastset = torchvision.datasets.CIFAR10(root = ROOT_PATH, train = True, download = True, transform = transform)
-trastloader = torch.utils.data.DataLoader(trastset, batch_size = batchSizeTest, shuffle = False, num_workers = (2 if gpu else 0))
+trastloader = torch.utils.data.DataLoader(trastset, batch_size = batchSizeTest, shuffle = False, num_workers = workers)
 testset = torchvision.datasets.CIFAR10(root = ROOT_PATH, train = False, download = True, transform = transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size = batchSizeTest, shuffle = False, num_workers = (2 if gpu else 0))
+testloader = torch.utils.data.DataLoader(testset, batch_size = batchSizeTest, shuffle = False, num_workers = workers)
 
 net = myResNet.ResNet(myResNet.BasicBlock, blocks, ioplanes, fcOut, ConvBlock_kernel_size = ConvBlock_kernel_size)
 if gpu: net.to(device)
@@ -66,7 +68,7 @@ optimizer = optim.SGD(net.parameters(), lr = iLearningRate, momentum = iMomentum
 runningLoss = 0.0
 iterationCount = 0
 
-def toEvaluate(loader):
+def toEvaluate(loader, loadername = ""):
     set_correct = 0.0
     set_total = 0.0
 
@@ -79,13 +81,14 @@ def toEvaluate(loader):
 
             outputs = net(inputs)
             _, predictions = torch.max(outputs.data, 1)
-            
-            for i in range(outputs.size(0)): # outputs.size(0) == labels.size(0) == batchSizeTest
+
+            # assert outputs.size(0) == labels.size(0) == batchSizeTest
+            for i in range(outputs.size(0)):
                 set_total += 1
                 if predictions[i] == labels[i]: set_correct += 1
 
     set_accuracy = 100 * set_correct / set_total
-    print("Accuracy of total: %d/%d = %.1f %%" % (set_correct, set_total, set_accuracy))
+    print(loadername, "accuracy: %d/%d = %.1f %%" % (set_correct, set_total, set_accuracy))
 
 t1 = datetime.datetime.now()
 
@@ -97,25 +100,30 @@ while True:
             inputs, labels = data
 
         optimizer.zero_grad()
-
         outputs = net(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
 
         runningLoss += loss.item()
+        iterationCount += 1
+
+        # 第一个iteration测试用
+        if iterationCount == 1:
+            # torch.save(net, "./ResNet18.pth")
+            print(runningLoss, flush = True)
+
         if iterationCount % iterationWhenPrintRunningLoss == 0:
             print(">> %.3f " % (runningLoss / iterationWhenPrintRunningLoss), end = "", flush = True)
             runningLoss = 0.0
-
-        iterationCount += 1
 
         if iterationCount % iterationWhenEvaluate == 0:
             torch.save(net, "./ResNet18_iteration" + str(iterationCount) + ".pth") # temporary save
             print("")
             print("iteration %d:" % (iterationCount))
 
-            for loader in (trastloader, testloader): toEvaluate(loader)
+            toEvaluate(trastloader, "trastloader")
+            toEvaluate(testloader, "testloader")
 
             t2 = datetime.datetime.now()
             print(t2 - t1)

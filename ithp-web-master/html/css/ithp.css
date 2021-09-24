@@ -1,0 +1,122 @@
+/* Override */
+.dropdown-menu > li > a {
+  line-height: 3
+}
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+}
+/* Custom styles */
+.ithp-navbar {
+  font-family: DengXian;
+}
+.ithp-footer {
+  font-family: DengXian;
+}
+.ithp-tamareisen {
+  font-family: DengXian;
+  font-size: 24px;
+  color: black;
+}
+.ithp-home-content-text {
+  font-family: Verdana,KaiTi,DengXian;
+  font-size: 18px;
+}
+.ithp-home-content-text > h1 {
+  font-family: Verdana,KaiTi,DengXian;
+  font-size: 34px;
+}
+.ithp-home-content-text > h2 {
+  font-family: Verdana,KaiTi,DengXian;
+  font-size: 22px;
+}
+.ithp-home-content-text > h3 {
+  font-family: Verdana,KaiTi,DengXian;
+  font-size: 18px;
+}
+.ithp-page-content-text {
+  font-family: Times New Roman,SimSun;
+  font-size: 14px;
+}
+.ithp-page-content-text > h1 {
+  font-size: 34px;
+}
+.ithp-page-content-text > h2 {
+  font-size: 22px;
+  line-height: 200%;
+}
+.ithp-page-content-text > h3 {
+  font-size: 18px;
+}
+
+    /* .inside from THBWiki */
+    .inside, .inside * {
+        color: transparent !important;
+        background-color: #000000 !important;
+        cursor: default !important;
+        -webkit-transition: color 500ms;
+        -moz-transition: color 500ms;
+        transition: color 500ms;
+    }
+    .inside:hover, .inside:hover *, .inside:active, .inside:active * {
+        color: #e8e8e8 !important;
+    }
+
+.ithp-sidebar {
+  font-family: DengXian;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 13px;
+  text-align: left;
+  list-style: none;
+  background-color: #ffffff;
+  background-clip: padding-box;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+.ithp-sidebar .divider {
+  height: 1px;
+  margin: 10.5px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
+}
+.ithp-sidebar > li > a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 3;
+  color: #666666;
+  white-space: nowrap;
+}
+.ithp-sidebar > li > a:hover,
+.ithp-sidebar > li > a:focus {
+  color: #141414;
+  text-decoration: none;
+  background-color: #eeeeee;
+}
+.ithp-sidebar > .active > a,
+.ithp-sidebar > .active > a:hover,
+.ithp-sidebar > .active > a:focus {
+  color: #141414;
+  text-decoration: none;
+  background-color: #eeeeee;
+  outline: 0;
+}
+

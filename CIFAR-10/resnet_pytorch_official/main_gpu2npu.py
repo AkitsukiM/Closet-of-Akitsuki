@@ -17,6 +17,9 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 
 from resnet import ResNet_cifar10
 
+import torch_npu
+from torch_npu.contrib import transfer_to_npu
+
 
 def dist_print(*args, 
                use_ddp: bool = True, 

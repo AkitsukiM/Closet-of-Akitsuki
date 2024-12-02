@@ -70,6 +70,7 @@ class Trainer(object):
         if self.use_ddp:
             self.rank, self.world_size = init_ddp()
             # self.device = "cuda:{}".format(self.rank)
+            # torch.cuda.set_device(self.rank)
             self.device = "npu:{}".format(self.rank)
             torch_npu.npu.set_device(self.rank)                                                     # npu
             self.samples_per_gpu = batch_size // self.world_size
@@ -79,8 +80,7 @@ class Trainer(object):
             self.device = torch.device("npu" if self.use_cuda else "cpu")                           # npu
             self.samples_per_gpu = batch_size
 
-        # self.num_workers = 4
-        self.num_workers = 0                                                                        # npu
+        self.num_workers = 4
 
         # 训练集超参
         self.transform_train = transforms.Compose([
@@ -294,6 +294,7 @@ if __name__ == "__main__":
     parser.add_argument("--use_ddp", type = int, default = 1, help = None)
     parser.add_argument("--save_path", type = str, default = "./work_dirs/", help = None)
     parser.add_argument("--local_rank", type = int, default = 0, help = None)
+    parser.add_argument("--local-rank", type = int, default = 0, help = None)
     opt = parser.parse_args()
 
     Trainer(

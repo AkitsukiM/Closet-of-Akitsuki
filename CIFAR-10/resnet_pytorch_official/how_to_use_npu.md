@@ -27,7 +27,7 @@ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 4 --master_addr 1
 
 ## OpenMMLab Series
 
-已支持：mmengine-0.10.5, mmcv-2.2.0, mmdetection-3.3.0, mmyolo-0.6.0, mmrotate-1.x。
+已支持：mmengine-0.10.4, mmcv-latest (>2.2.0, date-241212), mmdetection-3.3.0, mmyolo-0.6.0, mmrotate-1.x。
 
 ```
 # mirror: cann8.0.RC2-torch2.1.0-conda24.7.1-vscode4.12.0-ubuntu22.04-arm64
@@ -35,6 +35,8 @@ python -m torch.distributed.launch --nnodes 1 --nproc_per_node 4 --master_addr 1
 source /usr/local/Ascend/ascend-toolkit/set_env.sh
 
 conda create -n openmmlab210p6b python=3.9 -y
+mv /home/miniconda3/envs/openmmlab210p6b/ /workspace/all-data/envs/
+ln -s /workspace/all-data/envs/openmmlab210p6b/ /home/miniconda3/envs/
 conda activate openmmlab210p6b
 mkdir -p "/workspace/openmmlab210p6b/"
 cd "/workspace/openmmlab210p6b/"
@@ -57,7 +59,7 @@ pip install -e MindSpeed
 
 pip install numpy==1.26.4 ninja==1.11.1.1 psutil==6.1.0 pandas libcst prettytable jedi
 
-pip install mmengine==0.10.5
+pip install mmengine==0.10.4
 
 # ref: https://mmcv.readthedocs.io/zh-cn/v2.0.1/get_started/build.html#npu-mmcv
 git clone https://github.com/open-mmlab/mmcv.git
@@ -109,8 +111,8 @@ pip install -v -e .
 # 更改./mmrotate/__init__.py中的mmcv版本上限要求为'3.0.0'，mmdet版本上限要求为'4.0.0'
 # 训练
 # chmod +x ./tools/*.sh
-# ./tools/dist_train.sh ./configs/rotated_retinanet/rotated-retinanet-rbox-le90_r50_fpn_1x_dota.py 4
-# nohup ./tools/dist_train.sh ./configs/rotated_retinanet/rotated-retinanet-rbox-le90_r50_fpn_1x_dota.py 4 > nohup.log 2>&1 &
+# ASCEND_RT_VISIBLE_DEVICES=4,5,6,7 ./tools/dist_train.sh ./configs/rotated_retinanet/rotated-retinanet-rbox-le90_r50_fpn_1x_dota.py 4
+# nohup ASCEND_RT_VISIBLE_DEVICES=4,5,6,7 ./tools/dist_train.sh ./configs/rotated_retinanet/rotated-retinanet-rbox-le90_r50_fpn_1x_dota.py 4 > nohup.log 2>&1 &
 cd ../
 ```
 
